@@ -92,6 +92,215 @@
             #menu-container .p-5 { padding: .85rem !important; }
         }
 
+
+        /* Final mobile compact pass */
+        @media (max-width: 640px) {
+            body { font-size: 13px !important; padding-bottom: 5rem !important; }
+            header {
+                padding: 1.65rem 1rem 1.45rem !important;
+                margin-bottom: .55rem !important;
+                border-bottom-left-radius: 1.15rem !important;
+                border-bottom-right-radius: 1.15rem !important;
+            }
+            header .text-center { margin-top: .35rem !important; }
+            header h1 {
+                font-size: clamp(1.45rem, 6vw, 1.8rem) !important;
+                line-height: 1.15 !important;
+                margin-bottom: .45rem !important;
+            }
+            header p { font-size: .72rem !important; }
+            header .text-amber-500 { font-size: .62rem !important; margin-bottom: .45rem !important; }
+            header button { top: .65rem !important; right: .65rem !important; padding: .4rem !important; }
+            header button svg { width: 1rem !important; height: 1rem !important; }
+
+            #category-nav { padding: .45rem .65rem !important; }
+            #categoryList { gap: .35rem !important; }
+            #categoryList a { padding: .35rem .65rem !important; font-size: .68rem !important; }
+
+            #menu-container { padding: .75rem .75rem 1rem !important; }
+            #menu-container > div { margin-bottom: 1.1rem !important; padding-top: .35rem !important; }
+            #menu-container h2 { font-size: 1.08rem !important; margin-bottom: .55rem !important; }
+            #menu-container h3 { font-size: .9rem !important; line-height: 1.25 !important; }
+            #menu-container p { font-size: .72rem !important; line-height: 1.4 !important; }
+            #menu-container .rounded-3xl { border-radius: .8rem !important; }
+            #menu-container .p-5 { padding: .7rem !important; }
+            #menu-container .gap-4 { gap: .5rem !important; }
+            #menu-container .text-base { font-size: .78rem !important; }
+            #menu-container .text-2xl { font-size: 1.08rem !important; }
+            #menu-container .text-sm { font-size: .68rem !important; }
+            #menu-container .text-\\[10px\\] { font-size: .56rem !important; }
+            #menu-container .flex-col.gap-4 { gap: .55rem !important; }
+            #menu-container .mt-1 { margin-top: .2rem !important; }
+            #menu-container .mb-6 { margin-bottom: .65rem !important; }
+
+            #categoryFabBtn, #waiterBtn {
+                bottom: .7rem !important;
+                min-height: 36px !important;
+                box-shadow: 0 3px 10px rgba(0,0,0,.15) !important;
+            }
+            #categoryFabBtn {
+                left: .7rem !important;
+                padding: .48rem .75rem !important;
+                font-size: .68rem !important;
+                gap: .35rem !important;
+                border-width: 1px !important;
+            }
+            #categoryFabBtn svg { width: .9rem !important; height: .9rem !important; }
+            #waiterBtn { right: .7rem !important; padding: .58rem !important; }
+            #waiterBtn svg { width: 1rem !important; height: 1rem !important; }
+
+            #adminAddBtn {
+                bottom: .7rem !important;
+                min-height: 34px !important;
+                padding: .42rem .75rem !important;
+                gap: .32rem !important;
+                font-size: .68rem !important;
+                line-height: 1 !important;
+                border-width: 1px !important;
+                box-shadow: 0 3px 10px rgba(127,29,29,.16) !important;
+            }
+            #adminAddBtn svg { width: .85rem !important; height: .85rem !important; }
+
+            #loginModal > div, #itemModal > div, #deleteModal > div,
+            #qrModal > div, #categoryModal > div {
+                padding: 1rem !important;
+                border-radius: 1rem !important;
+                max-height: 88vh !important;
+            }
+            #loginModal h3, #itemModal h3, #deleteModal h3,
+            #qrModal h3, #categoryModal h3 { font-size: 1.05rem !important; margin-bottom: .65rem !important; }
+            #itemModal .space-y-4 { gap: .65rem !important; }
+            #itemModal label { font-size: .72rem !important; }
+            #itemModal input:not([type="checkbox"]), #itemModal select,
+            #itemModal textarea, #loginModal input {
+                font-size: .8rem !important;
+                padding: .55rem .7rem !important;
+                border-radius: .65rem !important;
+            }
+            #itemModal button, #loginModal button, #deleteModal button,
+            #qrModal button, #categoryModal button {
+                font-size: .75rem !important;
+                padding-top: .55rem !important;
+                padding-bottom: .55rem !important;
+            }
+            #modalCategoryList button { padding: .65rem .75rem !important; }
+            #modalCategoryList .text-lg { font-size: .85rem !important; }
+            #qrImage { width: 9rem !important; height: 9rem !important; }
+            footer { padding: 1.4rem .75rem !important; gap: .65rem !important; font-size: .68rem !important; }
+            footer button { padding: .45rem .8rem !important; font-size: .7rem !important; }
+        }
+        @media (max-width: 380px) {
+            #adminAddBtn { padding: .38rem .65rem !important; font-size: .64rem !important; }
+            #categoryFabBtn { padding: .42rem .65rem !important; }
+            #menu-container { padding-left: .6rem !important; padding-right: .6rem !important; }
+        }
+
+
+        /* Extra-small, balanced mobile scale */
+        @media (max-width: 640px) {
+            body { font-size: 12px !important; }
+
+            header { padding: 1.25rem .8rem 1.1rem !important; }
+            header h1 { font-size: clamp(1.25rem, 5.4vw, 1.55rem) !important; }
+            header p { font-size: .65rem !important; }
+            header .text-amber-500 { font-size: .56rem !important; }
+            header button { transform: scale(.85); transform-origin: top right; }
+
+            #category-nav { padding: .35rem .5rem !important; }
+            #categoryList { gap: .28rem !important; }
+            #categoryList a { padding: .28rem .52rem !important; font-size: .62rem !important; }
+
+            #menu-container { padding: .55rem .6rem .8rem !important; }
+            #menu-container h2 { font-size: .98rem !important; margin-bottom: .4rem !important; }
+            #menu-container h3 { font-size: .82rem !important; }
+            #menu-container p { font-size: .66rem !important; line-height: 1.35 !important; }
+            #menu-container .p-5 { padding: .58rem !important; }
+            #menu-container .rounded-3xl { border-radius: .68rem !important; }
+            #menu-container .gap-4 { gap: .38rem !important; }
+            #menu-container .text-base { font-size: .7rem !important; }
+            #menu-container .text-2xl { font-size: .98rem !important; }
+            #menu-container .text-sm { font-size: .62rem !important; }
+            #menu-container .text-\\[10px\\] { font-size: .5rem !important; }
+            #menu-container .flex-col.gap-4 { gap: .42rem !important; }
+            #menu-container .mb-6 { margin-bottom: .45rem !important; }
+            #menu-container .mb-10 { margin-bottom: .8rem !important; }
+
+            #categoryFabBtn {
+                min-height: 32px !important;
+                padding: .36rem .58rem !important;
+                font-size: .62rem !important;
+                gap: .25rem !important;
+            }
+            #categoryFabBtn svg { width: .78rem !important; height: .78rem !important; }
+            #waiterBtn { min-height: 32px !important; padding: .48rem !important; }
+            #waiterBtn svg { width: .85rem !important; height: .85rem !important; }
+            #adminAddBtn {
+                min-height: 30px !important;
+                padding: .34rem .6rem !important;
+                font-size: .62rem !important;
+                gap: .25rem !important;
+            }
+            #adminAddBtn svg { width: .75rem !important; height: .75rem !important; }
+
+            #loginModal > div, #itemModal > div, #deleteModal > div,
+            #qrModal > div, #categoryModal > div {
+                padding: .85rem !important;
+                border-radius: .85rem !important;
+            }
+            #loginModal h3, #itemModal h3, #deleteModal h3,
+            #qrModal h3, #categoryModal h3 { font-size: .95rem !important; }
+            #itemModal label { font-size: .66rem !important; }
+            #itemModal input:not([type="checkbox"]), #itemModal select,
+            #itemModal textarea, #loginModal input {
+                font-size: .72rem !important;
+                padding: .48rem .6rem !important;
+            }
+            #itemModal button, #loginModal button, #deleteModal button,
+            #qrModal button, #categoryModal button {
+                font-size: .68rem !important;
+                padding-top: .45rem !important;
+                padding-bottom: .45rem !important;
+            }
+            #modalCategoryList button { padding: .55rem .65rem !important; }
+            #modalCategoryList .text-lg { font-size: .78rem !important; }
+            footer { font-size: .62rem !important; padding: 1.1rem .6rem !important; }
+        }
+
+        @media (max-width: 380px) {
+            header h1 { font-size: 1.2rem !important; }
+            #menu-container { padding-left: .5rem !important; padding-right: .5rem !important; }
+            #menu-container .p-5 { padding: .5rem !important; }
+            #categoryFabBtn { padding: .32rem .5rem !important; }
+            #adminAddBtn { font-size: .58rem !important; padding: .3rem .5rem !important; }
+        }
+
+
+        @media (max-width: 640px) {
+            #adminAddBtn {
+                min-height: 26px !important;
+                padding: .24rem .48rem !important;
+                font-size: .55rem !important;
+                gap: .2rem !important;
+                border-radius: 999px !important;
+                box-shadow: 0 2px 7px rgba(127, 29, 29, .14) !important;
+            }
+            #adminAddBtn svg {
+                width: .65rem !important;
+                height: .65rem !important;
+            }
+        }
+        @media (max-width: 380px) {
+            #adminAddBtn {
+                min-height: 24px !important;
+                padding: .2rem .4rem !important;
+                font-size: .52rem !important;
+            }
+            #adminAddBtn svg {
+                width: .6rem !important;
+                height: .6rem !important;
+            }
+        }
+
     </style>
 </head>
 <body class="bg-surface text-stone-800 font-sans antialiased pb-24 relative selection:bg-brand-200">
