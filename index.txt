@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Menu</title>
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d' },
+                        surface: '#FDFBF7'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { display: none; } /* Hide scrollbar for a cleaner mobile look */
+        .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        html { scroll-behavior: smooth; }
+        /* Compact mobile sizing: calmer typography and easier-to-tap controls */
+        @media (max-width: 640px) {
+            body { font-size: 14px; }
+            header { padding-top: 2.25rem !important; padding-bottom: 2rem !important; margin-bottom: 1rem !important; border-bottom-left-radius: 1.5rem !important; border-bottom-right-radius: 1.5rem !important; }
+            header h1 { font-size: clamp(1.8rem, 8vw, 2.35rem) !important; line-height: 1.15 !important; margin-bottom: .75rem !important; }
+            header p { font-size: .8rem !important; }
+            #category-nav { padding-top: .65rem !important; padding-bottom: .65rem !important; }
+            #categoryList { gap: .45rem !important; }
+            #categoryList a { padding: .45rem .8rem !important; font-size: .78rem !important; }
+            #menu-container { padding-top: 1rem !important; }
+            #menu-container h2 { font-size: 1.3rem !important; margin-bottom: .9rem !important; }
+            #menu-container h3 { font-size: 1rem !important; line-height: 1.3 !important; }
+            #menu-container p { font-size: .82rem !important; line-height: 1.5 !important; }
+            #menu-container .rounded-3xl { border-radius: 1.15rem !important; }
+            #menu-container .p-5 { padding: 1rem !important; }
+            #menu-container .gap-4 { gap: .7rem !important; }
+            #menu-container .text-base { font-size: .9rem !important; }
+            #menu-container .text-2xl { font-size: 1.3rem !important; }
+            #menu-container .text-sm { font-size: .78rem !important; }
+            #menu-container .text-\[10px\] { font-size: .62rem !important; }
+            button { font-size: .82rem; }
+            #waiterBtn { padding: .8rem !important; }
+            #categoryFabBtn { padding: .65rem 1rem !important; font-size: .78rem !important; }
+            /* Compact admin action button on phones */
+            #adminAddBtn {
+                padding: .5rem .8rem !important;
+                min-height: 38px !important;
+                gap: .4rem !important;
+                font-size: .72rem !important;
+                line-height: 1.1 !important;
+                border-width: 1px !important;
+                border-radius: 999px !important;
+                bottom: .85rem !important;
+                white-space: nowrap !important;
+                box-shadow: 0 4px 12px rgba(127, 29, 29, .18) !important;
+            }
+            #adminAddBtn svg {
+                width:  .95rem !important;
+                height: .95rem !important;
+                flex-shrink: 0 !important;
+            }
+            #adminAddBtn:active {
+                transform: translate(-50%, 0) scale(.97) !important;
+            }
+            footer { padding-top: 2rem !important; padding-bottom: 2rem !important; font-size: .75rem !important; }
+        }
+        @media (max-width: 380px) {
+            #adminAddBtn {
+                padding: .45rem .7rem !important;
+                font-size: .68rem !important;
+                min-height: 35px !important;
+                gap: .32rem !important;
+            }
+            #adminAddBtn svg {
+                width: .85rem !important;
+                height: .85rem !important;
+            }
+            #categoryFabBtn { left: 1rem !important; bottom: 1rem !important; }
+            #waiterBtn { right: 1rem !important; bottom: 1rem !important; }
+            #menu-container .p-5 { padding: .85rem !important; }
+        }
+
+    </style>
+</head>
+<body class="bg-surface text-stone-800 font-sans antialiased pb-24 relative selection:bg-brand-200">
+    
+    <!-- Admin Top Bar (Hidden by default) -->
+    <div id="adminTopBar" class="hidden bg-brand-900 text-white p-3 flex justify-between items-center sticky top-0 z-[60] shadow-md border-b border-brand-800">
+        <div class="flex items-center gap-2 text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clip-rule="evenodd" />
+            </svg>
+            Owner Edit Mode
+        </div>
+        <div class="flex gap-2">
+            <button data-action="logoutAdmin" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-lg transition-colors font-medium">Exit</button>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-stone-900 text-white pt-14 pb-12 px-4 relative rounded-b-[2.5rem] mb-6 z-50 shadow-xl overflow-hidden">
+        <!-- Decorative Background Elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+            <div class="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-brand-500 blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-amber-500 blur-3xl"></div>
+        </div>
+
+        <!-- QR Code Button -->
+        <button data-action="openQRModal" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 shadow-sm border border-white/10" title="Show QR Code">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+        </button>
+
+        <div class="text-center max-w-xl mx-auto relative z-10 mt-2">
+            <p class="text-amber-500 text-xs font-semibold tracking-widest uppercase mb-3">Est. 2026</p>
+            <h1 class="text-5xl font-serif font-bold text-white mb-4 tracking-tight drop-shadow-sm">The Rustic Table</h1>
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <span class="h-[1px] w-8 bg-brand-500/50"></span>
+                <p class="text-stone-300 text-sm font-light italic">Authentic flavors, crafted with passion.</p>
+                <span class="h-[1px] w-8 bg-brand-500/50"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Category Navigation -->
+    <nav id="category-nav" class="sticky top-0 z-40 bg-surface/90 backdrop-blur-xl border-b border-stone-200/50 py-4 px-4 overflow-x-auto custom-scrollbar transition-all duration-300 shadow-sm">
+        <ul class="flex gap-3 max-w-md mx-auto" id="categoryList">
+            <!-- Categories will be injected here -->
+        </ul>
+    </nav>
+
+    <!-- Main Menu Content -->
+    <main class="max-w-md mx-auto px-4 py-6" id="menu-container">
+        <!-- Loading State -->
+        <div id="loading-spinner" class="flex flex-col items-center justify-center py-20 gap-4">
+            <div class="w-10 h-10 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+            <p class="text-brand-800 font-medium">Loading menu...</p>
+        </div>
+    </main>
+
+    <!-- Call Waiter Button -->
+    <button id="waiterBtn" data-action="showWaiterMessage" class="fixed bottom-6 right-6 bg-brand-600 hover:bg-brand-500 text-white p-4 rounded-full shadow-lg shadow-brand-900/30 transition-transform active:scale-95 flex items-center justify-center z-40 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+    </button>
+
+    <!-- Categories FAB -->
+    <button id="categoryFabBtn" data-action="openCategoryModal" class="fixed bottom-6 left-6 bg-stone-900 hover:bg-stone-800 text-white px-5 py-3.5 rounded-full shadow-lg shadow-stone-900/30 transition-transform active:scale-95 flex items-center justify-center z-40 font-semibold tracking-wide gap-2 border-2 border-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        Menu
+    </button>
+
+    <!-- Admin Add Item FAB (Hidden by default) -->
+    <button id="adminAddBtn" data-action="openItemModal" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-brand-600 hover:bg-brand-500 text-white px-6 py-3.5 rounded-full shadow-xl shadow-brand-900/30 transition-transform active:scale-95 items-center justify-center z-50 font-semibold tracking-wide gap-2 border-2 border-white/20 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+        Add New Item
+    </button>
+
+    <!-- Footer -->
+    <footer class="text-center py-10 text-slate-400 text-sm flex flex-col items-center gap-4">
+        <p>&copy; 2026 The Rustic Table. All rights reserved.</p>
+        <button data-action="openLoginModal" class="flex items-center gap-2 text-brand-600 bg-brand-100 hover:bg-brand-200 px-4 py-2 rounded-full font-medium transition-colors shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            Admin Login
+        </button>
+    </footer>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-xl transition-all duration-300 transform -translate-y-24 z-[120] font-medium text-sm flex items-center gap-2"></div>
+
+    <!-- Modals -->
+
+    <!-- Admin Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full relative transform scale-95 transition-transform duration-300">
+            <h3 class="text-xl font-serif font-semibold text-brand-900 mb-4">Owner Login</h3>
+            <input type="password" id="adminPassword" placeholder="Enter password (admin123)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-2 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 transition-all">
+            <p id="loginError" class="text-red-500 text-sm mb-4 hidden">Incorrect password.</p>
+            <div class="flex gap-3 mt-4">
+                <button data-action="closeModals" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition-colors">Cancel</button>
+                <button data-action="attemptLogin" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-xl transition-colors">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Item Modal -->
+    <div id="itemModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 id="itemModalTitle" class="text-xl font-serif font-semibold text-brand-900 mb-4">Add Menu Item</h3>
+            <input type="hidden" id="editItemId">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Name*</label>
+                    <input type="text" id="itemName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Category*</label>
+                    <select id="itemCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                        <option value="">Select a category</option>
+                        <option>Starters</option>
+                        <option>Soups</option>
+                        <option>Salads</option>
+                        <option>Mains</option>
+                        <option>Sides</option>
+                        <option>Desserts</option>
+                        <option>Drinks</option>
+                        <option>Breakfast</option>
+                        <option>Others</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Price (£)*</label>
+                    <input type="number" step="0.01" id="itemPrice" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                    <textarea id="itemDesc" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tags (comma separated)</label>
+                    <div id="itemTags" class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Vegetarian" class="item-tag rounded border-slate-300 text-brand-600"> Vegetarian</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Vegan" class="item-tag rounded border-slate-300 text-brand-600"> Vegan</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Spicy" class="item-tag rounded border-slate-300 text-brand-600"> Spicy</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Gluten-Free" class="item-tag rounded border-slate-300 text-brand-600"> Gluten-free</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Chef's Pick" class="item-tag rounded border-slate-300 text-brand-600"> Chef's special</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Popular" class="item-tag rounded border-slate-300 text-brand-600"> Popular</label>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 pt-2">
+                    <input type="checkbox" id="itemInStock" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 border-gray-300">
+                    <label class="text-sm font-medium text-slate-700">Currently in Stock (visible to customers)</label>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button data-action="closeModals" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition-colors">Cancel</button>
+                <button data-action="saveItem" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-xl transition-colors">Save Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[110] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full relative transform scale-95 transition-transform duration-300 text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-500 flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Delete Item?</h3>
+            <p class="text-slate-500 mb-6">Are you sure you want to remove this item from the menu? This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button data-action="closeModals" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition-colors">Cancel</button>
+                <button data-action="confirmDelete" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-xl transition-colors">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div id="qrModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center relative transform scale-95 transition-transform duration-300">
+            <button data-action="closeModals" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            
+            <h3 class="text-2xl font-serif font-bold text-brand-900 mb-2">Scan to Order</h3>
+            <p class="text-slate-500 text-sm mb-6">Point your camera at the QR code to open this menu on your device.</p>
+            
+            <div class="bg-white p-4 rounded-2xl shadow-inner border border-slate-100 inline-block mb-6">
+                <img id="qrImage" src="" alt="QR Code" class="w-48 h-48 object-contain">
+            </div>
+            
+            <button data-action="closeModals" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-xl transition-colors">Close</button>
+        </div>
+    </div>
+
+    <!-- Category Jump Modal -->
+    <div id="categoryModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full relative transform scale-95 transition-transform duration-300 max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center mb-4 shrink-0">
+                <h3 class="text-xl font-serif font-bold text-stone-900">Jump to Category</h3>
+                <button data-action="closeModals" class="text-stone-400 hover:text-stone-600 hover:bg-stone-100 p-2 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div id="modalCategoryList" class="flex flex-col gap-2 overflow-y-auto custom-scrollbar pb-2">
+                <!-- Categories injected here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Non-Module UI Scripts -->
+    <script>
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = isSuccess 
+                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> ${message}`
+                : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> ${message}`;
+            
+            toast.classList.remove('-translate-y-24');
+            toast.classList.add('translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0');
+                toast.classList.add('-translate-y-24');
+            }, 3000);
+        }
+
+        function showWaiterMessage() {
+            showToast("A waiter has been called to your table.");
+        }
+
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            const content = modal.querySelector('div');
+            
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    if(content.classList.contains('scale-95')) {
+                        content.classList.remove('scale-95');
+                        content.classList.add('scale-100');
+                    }
+                    if(content.classList.contains('translate-y-10')) {
+                        content.classList.remove('translate-y-10');
+                        content.classList.add('translate-y-0');
+                    }
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                if(content.classList.contains('scale-100')) {
+                    content.classList.remove('scale-100');
+                    content.classList.add('scale-95');
+                }
+                if(content.classList.contains('translate-y-0')) {
+                    content.classList.remove('translate-y-0');
+                    content.classList.add('translate-y-10');
+                }
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+        }
+    </script>
+
+
+    <!-- APP LOGIC -->
+    <script>
+        // App State
+        let isAdmin = false;
+        let itemToDeleteId = null;
+
+        // Menu Data (Stored locally in-memory)
+        let menuItems = [
+            { id: "1", name: "Truffle Arancini", category: "Starters", price: 8.50, description: "Crispy risotto balls filled with wild mushrooms and mozzarella, served with truffle aioli.", tags: ["Vegetarian", "Popular"], inStock: true },
+            { id: "2", name: "Calamari Fritti", category: "Starters", price: 9.00, description: "Lightly dusted squid rings, lemon wedge, garlic mayonnaise.", tags: [], inStock: true },
+            { id: "3", name: "Wagyu Beef Burger", category: "Mains", price: 18.00, description: "8oz Wagyu patty, mature cheddar, caramelized onions, brioche bun, house fries.", tags: ["Chef's Pick"], inStock: true },
+            { id: "4", name: "Wild Mushroom Risotto", category: "Mains", price: 15.50, description: "Arborio rice, porcini mushrooms, parmesan crisp, white truffle oil.", tags: ["Vegetarian", "Gluten-Free"], inStock: true },
+            { id: "5", name: "Spicy Arrabbiata", category: "Mains", price: 13.00, description: "Penne pasta, garlic, chili, San Marzano tomatoes, fresh basil.", tags: ["Vegan", "Spicy"], inStock: true },
+            { id: "6", name: "Tiramisu", category: "Desserts", price: 7.00, description: "Classic Italian dessert with coffee-soaked ladyfingers and mascarpone cream.", tags: [], inStock: true },
+            { id: "7", name: "Sparkling Water", category: "Drinks", price: 3.50, description: "San Pellegrino 750ml.", tags: [], inStock: true },
+            { id: "8", name: "Artisan Lemonade", category: "Drinks", price: 4.00, description: "House-made with organic lemons and mint.", tags: [], inStock: false }
+        ];
+
+        // Initialization
+        function initApp() {
+            renderMenu();
+        }
+
+        // --- Admin Window Actions ---
+        window.openLoginModal = () => toggleModal('loginModal', true);
+        window.openCategoryModal = () => toggleModal('categoryModal', true);
+        
+        window.closeModals = () => {
+            toggleModal('loginModal', false);
+            toggleModal('itemModal', false);
+            toggleModal('deleteModal', false);
+            toggleModal('qrModal', false);
+            toggleModal('categoryModal', false);
+            document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+        };
+
+        window.attemptLogin = () => {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === 'admin123') {
+                isAdmin = true;
+                document.getElementById('adminTopBar').classList.remove('hidden');
+                document.getElementById('adminAddBtn').classList.remove('hidden');
+                document.getElementById('waiterBtn').classList.add('hidden');
+                document.getElementById('category-nav').classList.add('top-11'); // Adjust sticky nav below top bar
+                renderMenu();
+                closeModals();
+                showToast("Logged in as Admin successfully");
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        };
+
+        window.logoutAdmin = () => {
+            isAdmin = false;
+            document.getElementById('adminTopBar').classList.add('hidden');
+            document.getElementById('adminAddBtn').classList.add('hidden');
+            document.getElementById('waiterBtn').classList.remove('hidden');
+            document.getElementById('category-nav').classList.remove('top-11');
+            renderMenu();
+            showToast("Logged out of Admin mode.");
+        };
+
+        window.openItemModal = (id = null) => {
+            document.getElementById('loginError').classList.add('hidden'); // clear any lingering errors
+            
+            if (id) {
+                const item = menuItems.find(i => i.id === id);
+                if (item) {
+                    document.getElementById('itemModalTitle').innerText = 'Edit Menu Item';
+                    document.getElementById('editItemId').value = item.id;
+                    document.getElementById('itemName').value = item.name;
+                    document.getElementById('itemCategory').value = item.category;
+                    document.getElementById('itemPrice').value = item.price;
+                    document.getElementById('itemDesc').value = item.description || '';
+                    document.querySelectorAll('.item-tag').forEach(box => {
+                        box.checked = !!(item.tags && item.tags.includes(box.value));
+                    });
+                    document.getElementById('itemInStock').checked = item.inStock !== false;
+                }
+            } else {
+                document.getElementById('itemModalTitle').innerText = 'Add Menu Item';
+                document.getElementById('editItemId').value = '';
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemCategory').value = '';
+                document.getElementById('itemPrice').value = '';
+                document.getElementById('itemDesc').value = '';
+                document.querySelectorAll('.item-tag').forEach(box => { box.checked = false; });
+                document.getElementById('itemInStock').checked = true;
+            }
+            toggleModal('itemModal', true);
+        };
+
+        window.saveItem = () => {
+            const id = document.getElementById('editItemId').value || Date.now().toString();
+            const name = document.getElementById('itemName').value.trim();
+            const category = document.getElementById('itemCategory').value.trim() || 'Uncategorized';
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            const description = document.getElementById('itemDesc').value.trim();
+            const tags = Array.from(document.querySelectorAll('.item-tag:checked')).map(box => box.value);
+            const inStock = document.getElementById('itemInStock').checked;
+
+            if (!name) {
+                showToast("Item name is required", false);
+                return;
+            }
+
+            const itemData = { id, name, category, price, description, tags, inStock };
+            
+            const existingIndex = menuItems.findIndex(i => i.id === id);
+            if (existingIndex >= 0) {
+                // Update existing item
+                menuItems[existingIndex] = itemData;
+            } else {
+                // Add new item
+                menuItems.push(itemData);
+            }
+
+            renderMenu();
+            closeModals();
+            showToast(document.getElementById('editItemId').value ? "Item updated!" : "Item added!");
+        };
+
+        window.openDeleteModal = (id) => {
+            itemToDeleteId = id;
+            toggleModal('deleteModal', true);
+        };
+
+        window.confirmDelete = () => {
+            if (!itemToDeleteId) return;
+            menuItems = menuItems.filter(i => i.id !== itemToDeleteId);
+            renderMenu();
+            closeModals();
+            showToast("Item deleted successfully");
+        };
+
+        window.toggleStock = (id, currentStatus) => {
+            const item = menuItems.find(i => i.id === id);
+            if (item) {
+                item.inStock = !currentStatus;
+                renderMenu();
+                showToast(!currentStatus ? "Item marked as In Stock" : "Item marked as Out of Stock");
+            }
+        };
+
+        const openQRModal = () => {
+            const currentUrl = window.location.href;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl)}`;
+            document.getElementById('qrImage').src = qrUrl;
+            toggleModal('qrModal', true);
+        };
+
+        // Global Event Delegation for dynamic elements
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            
+            const action = btn.getAttribute('data-action');
+            const id = btn.getAttribute('data-id');
+            
+            if (action === 'toggleStock') {
+                const stock = btn.getAttribute('data-stock') === 'true';
+                window.toggleStock(id, stock);
+            } else if (action === 'editItem') {
+                window.openItemModal(id);
+            } else if (action === 'deleteItem') {
+                window.openDeleteModal(id);
+            } else if (action === 'openItemModal') {
+                window.openItemModal();
+            } else if (action === 'logoutAdmin') {
+                window.logoutAdmin();
+            } else if (action === 'openQRModal') {
+                openQRModal();
+            } else if (action === 'openCategoryModal') {
+                window.openCategoryModal();
+            } else if (action === 'scrollToCategory') {
+                const idx = btn.getAttribute('data-idx');
+                const target = document.getElementById(`category-${idx}`);
+                if(target) target.scrollIntoView({ behavior: 'smooth' });
+                window.closeModals();
+            } else if (action === 'showWaiterMessage') {
+                showWaiterMessage();
+            } else if (action === 'openLoginModal') {
+                window.openLoginModal();
+            } else if (action === 'closeModals') {
+                window.closeModals();
+            } else if (action === 'attemptLogin') {
+                window.attemptLogin();
+            } else if (action === 'saveItem') {
+                window.saveItem();
+            } else if (action === 'confirmDelete') {
+                window.confirmDelete();
+            }
+        });
+
+        // --- Rendering Engine ---
+        function getBadgeHTML(tag) {
+            const colors = {
+                "Vegetarian": "bg-green-100 text-green-700 border-green-200",
+                "Vegan": "bg-emerald-100 text-emerald-700 border-emerald-200",
+                "Spicy": "bg-red-100 text-red-700 border-red-200",
+                "Gluten-Free": "bg-amber-100 text-amber-700 border-amber-200",
+                "Chef's Pick": "bg-brand-100 text-brand-700 border-brand-200",
+                "Popular": "bg-blue-100 text-blue-700 border-blue-200"
+            };
+            const colorClass = colors[tag] || "bg-stone-100 text-stone-600 border-stone-200";
+            return `<span class="px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider font-semibold border ${colorClass}">${tag}</span>`;
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            const nav = document.getElementById('categoryList');
+            const modalNav = document.getElementById('modalCategoryList');
+            
+            // Filter out items that are out of stock for normal customers
+            const visibleItems = isAdmin ? menuItems : menuItems.filter(item => item.inStock !== false);
+            
+            if (visibleItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20 text-stone-500">
+                        <div class="w-16 h-16 mx-auto mb-4 opacity-20"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg></div>
+                        <p class="font-medium">No menu items available at the moment.</p>
+                    </div>
+                `;
+                nav.innerHTML = '';
+                modalNav.innerHTML = '';
+                return;
+            }
+
+            // Group by category
+            const groupedItems = visibleItems.reduce((acc, item) => {
+                (acc[item.category] = acc[item.category] || []).push(item);
+                return acc;
+            }, {});
+
+            // Render Nav
+            nav.innerHTML = Object.keys(groupedItems).map((category, idx) => `
+                <li>
+                    <a href="#category-${idx}" class="whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all shadow-sm block">
+                        ${category}
+                    </a>
+                </li>
+            `).join('');
+
+            // Render Modal Nav
+            modalNav.innerHTML = Object.keys(groupedItems).map((category, idx) => `
+                <button data-action="scrollToCategory" data-idx="${idx}" class="w-full text-left px-5 py-4 rounded-xl text-stone-800 bg-stone-50 hover:bg-stone-100 border border-stone-100 transition-colors flex justify-between items-center group">
+                    <span class="text-lg font-serif font-bold group-hover:text-brand-700 transition-colors">${category}</span>
+                    <span class="text-stone-400 text-sm font-sans font-medium bg-white px-2 py-1 rounded-md shadow-sm border border-stone-100">${groupedItems[category].length}</span>
+                </button>
+            `).join('');
+
+            // Render Items
+            container.innerHTML = Object.entries(groupedItems).map(([category, items], idx) => `
+                <div id="category-${idx}" class="mb-10 pt-4 scroll-mt-28">
+                    <div class="flex items-center gap-4 mb-6 px-1">
+                        <h2 class="text-2xl font-serif font-bold text-stone-900 capitalize tracking-tight">
+                            ${category}
+                        </h2>
+                        <div class="flex-1 h-[1px] bg-stone-200"></div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-4">
+                        ${items.map(item => {
+                            const isOutOfStock = item.inStock === false;
+                            
+                            return `
+                            <div class="bg-white rounded-3xl p-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.05)] border border-stone-100 relative ${isOutOfStock && isAdmin ? 'opacity-50 grayscale-[0.5]' : ''} flex flex-col gap-2 group hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.1)] transition-all">
+                                
+                                <div class="flex justify-between items-start gap-4">
+                                    <h3 class="text-lg font-serif font-bold text-stone-900 leading-tight">
+                                        ${item.name}
+                                    </h3>
+                                    <span class="text-brand-700 font-bold whitespace-nowrap text-base">£${parseFloat(item.price).toFixed(2)}</span>
+                                </div>
+                                
+                                ${item.description ? `<p class="text-sm text-stone-500 leading-relaxed">${item.description}</p>` : ''}
+                                
+                                <div class="flex flex-wrap gap-2 mt-1">
+                                    ${isOutOfStock ? '<span class="px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider font-bold bg-stone-800 text-white">Out of Stock</span>' : ''}
+                                    ${item.tags && item.tags.length > 0 ? item.tags.map(tag => getBadgeHTML(tag)).join('') : ''}
+                                </div>
+
+                                ${isAdmin ? `
+                                <div class="flex gap-2 mt-3 pt-3 border-t border-stone-100 justify-end">
+                                    <button data-action="toggleStock" data-id="${item.id}" data-stock="${!isOutOfStock}" class="px-3 py-1.5 rounded-lg bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors text-xs font-medium flex items-center gap-1" title="Toggle Stock">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                        ${isOutOfStock ? 'Mark In Stock' : 'Mark Out of Stock'}
+                                    </button>
+                                    <button data-action="editItem" data-id="${item.id}" class="p-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition-colors" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    </button>
+                                    <button data-action="deleteItem" data-id="${item.id}" class="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors" title="Delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </div>
+                                ` : ''}
+                            </div>
+                        `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Start App
+        initApp();
+    </script>
+</body>
+</html>
