@@ -30,6 +30,38 @@
         .custom-scrollbar::-webkit-scrollbar { display: none; } /* Hide scrollbar for a cleaner mobile look */
         .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         html { scroll-behavior: smooth; }
+        /* Compact mobile sizing: calmer typography and easier-to-tap controls */
+        @media (max-width: 640px) {
+            body { font-size: 14px; }
+            header { padding-top: 2.25rem !important; padding-bottom: 2rem !important; margin-bottom: 1rem !important; border-bottom-left-radius: 1.5rem !important; border-bottom-right-radius: 1.5rem !important; }
+            header h1 { font-size: clamp(1.8rem, 8vw, 2.35rem) !important; line-height: 1.15 !important; margin-bottom: .75rem !important; }
+            header p { font-size: .8rem !important; }
+            #category-nav { padding-top: .65rem !important; padding-bottom: .65rem !important; }
+            #categoryList { gap: .45rem !important; }
+            #categoryList a { padding: .45rem .8rem !important; font-size: .78rem !important; }
+            #menu-container { padding-top: 1rem !important; }
+            #menu-container h2 { font-size: 1.3rem !important; margin-bottom: .9rem !important; }
+            #menu-container h3 { font-size: 1rem !important; line-height: 1.3 !important; }
+            #menu-container p { font-size: .82rem !important; line-height: 1.5 !important; }
+            #menu-container .rounded-3xl { border-radius: 1.15rem !important; }
+            #menu-container .p-5 { padding: 1rem !important; }
+            #menu-container .gap-4 { gap: .7rem !important; }
+            #menu-container .text-base { font-size: .9rem !important; }
+            #menu-container .text-2xl { font-size: 1.3rem !important; }
+            #menu-container .text-sm { font-size: .78rem !important; }
+            #menu-container .text-\[10px\] { font-size: .62rem !important; }
+            button { font-size: .82rem; }
+            #waiterBtn { padding: .8rem !important; }
+            #categoryFabBtn { padding: .65rem 1rem !important; font-size: .78rem !important; }
+            #adminAddBtn { padding: .7rem 1rem !important; font-size: .8rem !important; }
+            footer { padding-top: 2rem !important; padding-bottom: 2rem !important; font-size: .75rem !important; }
+        }
+        @media (max-width: 380px) {
+            #categoryFabBtn { left: 1rem !important; bottom: 1rem !important; }
+            #waiterBtn { right: 1rem !important; bottom: 1rem !important; }
+            #menu-container .p-5 { padding: .85rem !important; }
+        }
+
     </style>
 </head>
 <body class="bg-surface text-stone-800 font-sans antialiased pb-24 relative selection:bg-brand-200">
@@ -146,7 +178,18 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Category*</label>
-                    <input type="text" id="itemCategory" placeholder="e.g., Starters, Mains" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                    <select id="itemCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                        <option value="">Select a category</option>
+                        <option>Starters</option>
+                        <option>Soups</option>
+                        <option>Salads</option>
+                        <option>Mains</option>
+                        <option>Sides</option>
+                        <option>Desserts</option>
+                        <option>Drinks</option>
+                        <option>Breakfast</option>
+                        <option>Others</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Price (£)*</label>
@@ -158,7 +201,14 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Tags (comma separated)</label>
-                    <input type="text" id="itemTags" placeholder="e.g., Vegan, Spicy, Popular" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 outline-none focus:border-brand-500 transition-colors">
+                    <div id="itemTags" class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Vegetarian" class="item-tag rounded border-slate-300 text-brand-600"> Vegetarian</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Vegan" class="item-tag rounded border-slate-300 text-brand-600"> Vegan</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Spicy" class="item-tag rounded border-slate-300 text-brand-600"> Spicy</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Gluten-Free" class="item-tag rounded border-slate-300 text-brand-600"> Gluten-free</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Chef's Pick" class="item-tag rounded border-slate-300 text-brand-600"> Chef's special</label>
+                        <label class="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" value="Popular" class="item-tag rounded border-slate-300 text-brand-600"> Popular</label>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2 pt-2">
                     <input type="checkbox" id="itemInStock" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 border-gray-300">
@@ -355,7 +405,9 @@
                     document.getElementById('itemCategory').value = item.category;
                     document.getElementById('itemPrice').value = item.price;
                     document.getElementById('itemDesc').value = item.description || '';
-                    document.getElementById('itemTags').value = item.tags ? item.tags.join(', ') : '';
+                    document.querySelectorAll('.item-tag').forEach(box => {
+                        box.checked = !!(item.tags && item.tags.includes(box.value));
+                    });
                     document.getElementById('itemInStock').checked = item.inStock !== false;
                 }
             } else {
@@ -365,7 +417,7 @@
                 document.getElementById('itemCategory').value = '';
                 document.getElementById('itemPrice').value = '';
                 document.getElementById('itemDesc').value = '';
-                document.getElementById('itemTags').value = '';
+                document.querySelectorAll('.item-tag').forEach(box => { box.checked = false; });
                 document.getElementById('itemInStock').checked = true;
             }
             toggleModal('itemModal', true);
@@ -377,8 +429,7 @@
             const category = document.getElementById('itemCategory').value.trim() || 'Uncategorized';
             const price = parseFloat(document.getElementById('itemPrice').value) || 0;
             const description = document.getElementById('itemDesc').value.trim();
-            const tagsStr = document.getElementById('itemTags').value;
-            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t !== '') : [];
+            const tags = Array.from(document.querySelectorAll('.item-tag:checked')).map(box => box.value);
             const inStock = document.getElementById('itemInStock').checked;
 
             if (!name) {
